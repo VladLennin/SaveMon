@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <title>Add Payment</title>
+</head>
+<body>
+<header th:insert="blocks/nav-panel.html :: nav-panel"></header>
+
+<main>
+    <div class="container">
+        <div class="row my-5">
+            <div class="col-md-1"></div>
+            <div class=" col-md-5 col-sm-12 ">
+
+                <div class="card  ">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Add Payment</h5>
+                    </div>
+                    <form th:action="@{/add-payment}" th:method="post">
+                        <ul class="list-group list-group-flush ">
+
+
+                            <li class="list-group-item ">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label mb-3">Type Payment:</label>
+                                        <div class="text-center " style="display:flex;">
+                                            <div class="form-check  ">
+                                                <input class="form-check-input" value="0" type="radio"
+                                                       name="typePayment"
+                                                       id="flexRadioNal"
+                                                       checked>
+                                                <label class="form-check-label" for="flexRadioNal">
+                                                    Cash
+                                                </label>
+                                            </div>
+                                            <div class="form-check mx-5">
+                                                <input class="form-check-input" value="1" type="radio"
+                                                       name="typePayment"
+                                                       id="flexRadioTerminal">
+                                                <label class="form-check-label" for="flexRadioTerminal">
+                                                    Terminal
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-check-label mb-3" for="paymentDirection">Payment
+                                            direction:</label>
+
+                                        <select class="form-select mb-2" id="paymentDirection" name="selectDirection">
+                                            <option th:each="direction : ${directionPayments}"
+                                                    th:value="${direction.ordinal}"
+                                                    th:utext="${direction.name}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                            </li>
+                            <li class="list-group-item">
+                                <label for="sumaText" class="form-label">Suma:</label>
+                                <input type="number" th:name="suma" id="sumaText" step="0.01" class="form-control">
+                            </li>
+                            <li class="list-group-item">
+                                <label for="commentText" class="form-label">Comment:</label>
+                                <input type="text" th:name="comment" id="commentText" class="form-control">
+                            </li>
+                        </ul>
+
+
+                        <div class="row">
+                            <div class="col-auto mx-3 my-3">
+                                <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
+                                <button th:type="submit" class="btn btn-success">Accept</button>
+                            </div>
+                            <div class="col my-auto">
+                                <label th:text="${paymentError}"
+                                       class="form-label d-inline text-danger fs-5 fw-bold"></label>
+                            </div>
+                        </div>
+                    </form>
+
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4 col-sm-12 ">
+
+                <div class="card  ">
+                    <div class="card-header bg-warning">
+                        Your last payments
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item text-" th:each=" payment : ${last5Payments}">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <img style="height: 30px;width: 30px;" th:src="${payment.getImage()}">
+                                        <label class="form-label" th:text="${payment.getDirection()}"></label>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label me-3" th:text="${payment.getTimeFormated()}"></label>
+                                        <label class="form-label ms-3" th:text="${payment.getSuma()}+' uah'"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+                <br>
+                <div th:if="${last3PaymentsOfFamily!=null}" class="card">
+                    <div class="card-header bg-warning ">
+                        Families last payments
+                    </div>
+
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item text-" th:each=" payment : ${last3PaymentsOfFamily}">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <div th:switch="${payment.getUser().getImage()}">
+
+                                            <svg th:case="'Default'" style="width: 75px;height: 75px;margin:10px;"
+                                                 xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                 class=" bi bi-person-bounding-box " viewBox="0 0 16 16">
+                                                <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5z"/>
+                                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                                            </svg>
+
+                                            <image th:case="*"
+                                                   style="text-align: center;width: 75px;height: 75px;border-radius: 10px;border-style: solid;border-color: var(--bs-gray);margin: 10px;box-shadow: 5px 5px 10px var(--bs-gray-700);"
+                                                   th:src="*{'data:image/jpeg;base64,'+payment.getUser().getImage}"></image>
+                                        </div>
+                                        <div>
+                                            <label class="form-label title fs-5 ms-3"
+                                                   th:text="${payment.getUser().getLogin()}">
+
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-9  ">
+                                        <div class="ms-5 mt-3">
+                                            <img style="height: 30px;width: 30px;"
+                                                 th:src="${payment.getImage()}">
+                                            <label class="form-label"
+                                                   th:text="${payment.getDirection()}"></label>
+                                            <div class="col">
+                                                <label class="form-label "
+                                                       th:text="${payment.getTimeFormated()}"></label><br>
+                                                <label class="form-label "
+                                                       th:text="${payment.getSuma()}+' uah'"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+</main>
+<footer th:insert="blocks/footer :: footer"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+</body>
+</html>

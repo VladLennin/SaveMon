@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <title>Admin</title>
+</head>
+<body>
+
+
+<header th:insert="blocks/nav-panel.html :: nav-panel"></header>
+
+
+<main>
+
+    <container>
+        <div class="row">
+            <div class="col m-5">
+                <div class="m-3">
+                    <form method="post" th:action="@{/admin-page/search}">
+                        <input class="form-control w-25 d-inline-flex" name="data" placeholder="Enter any data for user"
+                               type="text">
+                        <button class="btn btn-primary" style="width: 5rem;" type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <form method="post" id="formSort"  th:action="@{/admin-page/sort}">
+                            <th scope="col">
+                                <button type="submit" value="id"  name="sortBy" class="btn btn-dark " onclick="getdetails()">ID</button>
+                            </th>
+                            <th scope="col">
+                                <button class="btn btn-dark "  name="sortBy"  value="login">Login</button>
+                            </th>
+                            <th scope="col">
+                                <button class="btn btn-dark "  name="sortBy" value="password">Password</button>
+                            </th>
+                            <th scope="col">
+                                <button class="btn btn-dark "  name="sortBy" value="email">Email</button>
+                            </th>
+                            <th scope="col">
+                                <button class="btn btn-dark "  name="sortBy" value="name">Name</button>
+                            </th>
+                            <th scope="col">
+                                <button class="btn btn-dark "  name="sortBy" value="surname">Surname</button>
+                            </th>
+                            <th scope="col">
+                                <button class="btn btn-dark " name="sortBy" value="birthday">Birthday</button>
+                            </th>
+                            <th scope="col">
+                                <button class="btn btn-dark " name="sortBy" value="familyId">Family ID</button>
+                            </th>
+                            <th scope="col">
+                                <button class="btn btn-dark " name="sortBy" value="sex">Sex</button>
+                            </th>
+                            <th scope="col">
+                                <button class="btn btn-dark " name="sortBy" value="number">Number</button>
+                            </th>
+                            <th scope="col">
+                                <button class="btn btn-dark " name="sortBy" value="country">Country</button>
+                            </th>
+                            <th scope="col">
+                                <button class="btn btn-dark " name="sortBy" value="role">Role</button>
+                            </th>
+                            <th scope="col">
+                                <label class="form-label title " >Edit</label>
+                            </th>
+                            <th scope="col">
+                                <label class="form-label title">Delete</label>
+                            </th>
+                        </form>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="userF : ${users}">
+                        <th scope="row" th:text="${userF.getId}"></th>
+                        <td th:text="${userF.getLogin()}"></td>
+                        <td th:text="${userF.getPassword()}"></td>
+                        <td th:text="${userF.getEmail()}"></td>
+                        <td th:text="${userF.getName()}"></td>
+                        <td th:text="${userF.getSurname()}"></td>
+                        <td th:text="${userF.getBirthday()}"></td>
+                        <td th:text="${userF.getFamilyId()}"></td>
+                        <td th:text="${userF.getSex()}"></td>
+                        <td th:text="${userF.getNumber()}"></td>
+                        <td th:text="${userF.getCountry()}"></td>
+                        <td th:text="${userF.getRole()}"></td>
+                        <td>
+                            <a th:href="'/admin-page/edit/'+${userF.getId()}" class="btn btn-primary">Edit</a>
+                        </td>
+                        <td>
+                            <form th:action="@{'/admin-page/remove/'+${userF.getId()}}" method="post">
+                                <button type="submit" class="btn btn-danger">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                         class="bi bi-trash" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                        <path fill-rule="evenodd"
+                                              d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                    </svg>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+                <script>
+                    function getdetails() {
+
+                        document.getElementById('formSort').submit();
+                    }
+                </script>
+            </div>
+        </div>
+    </container>
+
+</main>
+<footer th:insert="blocks/footer :: footer"></footer>
+
+<div th:insert="blocks/boostrapScripts.html :: scripts"></div>
+</body>
+</html>

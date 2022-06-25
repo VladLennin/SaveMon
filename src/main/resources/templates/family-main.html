@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/myCSS.css}" rel="stylesheet">
+    <title>Family</title>
+</head>
+<body>
+
+<header th:insert="blocks/nav-panel :: nav-panel"></header>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col text-center">
+                <div th:if="${user.getFamilyId()==0}" class="shadow-border text-center">
+                    <label class="form-label fs-3 mb-3 title ">You dont have family! </label>
+                    <form method="post" th:action="@{/family/create}">
+                        <div class="ms-5 mb-4 d-flex inline text-center">
+                            <input type="text" class="form-control w-50 me-5" name="familyName"
+                                   placeholder="Enter family name">
+                            <button class="btn btn-success ms-5" type="submit" style="width: 10rem;">Create</button>
+                        </div>
+                    </form>
+                </div>
+                <div th:if="${user.getFamilyId()!=0}" class="shadow-border text-center">
+                    <label class="form-label title fs-3">Your family: <label th:text="${user.getCurrentFamily().getName()}"></label> </label>
+                    <div class="border border-secondary"></div>
+                    <div th:each="member : ${members}">
+
+                        <div class="card m-3" style="max-width: 540px;">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <div th:switch="${member.getImage()}">
+
+                                        <svg th:case="'Default'" style="width: 150px;height: 150px;margin:10px;"
+                                             xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                             class=" bi bi-person-bounding-box my-4" viewBox="0 0 16 16">
+                                            <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5z"/>
+                                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                                        </svg>
+
+                                        <image th:case="*"
+                                               style="text-align: center;width: 150px;height: 150px;border-radius: 10px;border-style: solid;border-color: var(--bs-gray);margin: 10px;box-shadow: 5px 5px 10px var(--bs-gray-700);"
+                                               th:src="*{'data:image/jpeg;base64,'+member.getImage}"></image>
+                                    </div>
+                                    <div class="d-flex inline ms-4" th:if="${member==user.getCurrentFamily().getCreator()}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                             fill="currentColor" class="bi  bi-star" viewBox="0 0 16 16">
+                                            <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+                                        </svg>
+                                        <label class="from-label fs-4 ms-2">Creator</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h5 class="card-title">Login: </h5>
+                                                <p class="card-text" th:text="${member.getLogin()}"></p>
+                                            </div>
+                                            <div class="col">
+                                                <h5 class="card-title">Name: </h5>
+                                                <p class="card-text" th:text="${member.getName()}"></p>
+                                            </div>
+                                            <div class="col"><h5 class="card-title">Surname: </h5>
+                                                <p class="card-text" th:text="${member.getSurname()}"></p>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col">
+                                                <h5 class="card-title">Country: </h5>
+                                                <p class="card-text" th:text="${member.getCountry()}"></p>
+                                            </div>
+                                            <div class="col">
+                                                <h5 class="card-title">Sex: </h5>
+                                                <p class="card-text" th:text="${member.getSex()}"></p>
+                                            </div>
+                                            <div class="col">
+                                                <h5 class="card-title">Age: </h5>
+                                                <p class="card-text" th:text="${member.getAge()}+' years'"></p>
+                                            </div>
+                                        </div>
+                                        <div class="row ">
+                                            <div class="col text-end">
+                                                <form class="text-right" method="post"
+                                                      th:action="@{'/family/remove-member/'+${member.getId()}}" th:if="${user==user.getCurrentFamily().getCreator()}">
+
+                                                    <button th:if="${member!=user.getCurrentFamily().getCreator()}" class="btn btn-danger w-50 mt-3 ms-4" value="deny"
+                                                            type="submit">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                             fill="currentColor" class="bi bi-trash"
+                                                             viewBox="0 0 16 16">
+                                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                            <path fill-rule="evenodd"
+                                                                  d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="shadow-border text-center">
+                    <label class=" form-label title fs-3">Request to you</label>
+                    <div class="border border-secondary"></div>
+                    <div th:if="${requests.size()!=0}" th:each="request : ${requests}">
+                        <div class="card m-3" style="max-width: 540px;">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <div th:switch="${request.getUserFrom().getImage()}">
+
+                                        <svg th:case="'Default'" style="width: 150px;height: 150px;margin:10px;"
+                                             xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                             class=" bi bi-person-bounding-box my-4" viewBox="0 0 16 16">
+                                            <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5z"/>
+                                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                                        </svg>
+
+                                        <image th:case="*"
+                                               style="text-align: center;width: 150px;height: 150px;border-radius: 10px;border-style: solid;border-color: var(--bs-gray);margin: 10px;box-shadow: 5px 5px 10px var(--bs-gray-700);"
+                                               th:src="*{'data:image/jpeg;base64,'+request.getUserFrom().getImage}"></image>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h5 class="card-title">Login: </h5>
+                                                <p class="card-text" th:text="${request.getUserFrom().getLogin()}"></p>
+                                            </div>
+                                            <div class="col">
+                                                <h5 class="card-title">Name: </h5>
+                                                <p class="card-text" th:text="${request.getUserFrom().getName()}"></p>
+                                            </div>
+                                            <div class="col"><h5 class="card-title">Surname: </h5>
+                                                <p class="card-text" th:text="${request.getUserFrom().getSurname()}"></p>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col">
+                                                <h5 class="card-title">Country: </h5>
+                                                <p class="card-text" th:text="${request.getUserFrom().getCountry()}"></p>
+                                            </div>
+                                            <div class="col">
+                                                <h5 class="card-title">Sex: </h5>
+                                                <p class="card-text" th:text="${request.getUserFrom().getSex()}"></p>
+                                            </div>
+                                            <div class="col">
+                                                <h5 class="card-title">Age: </h5>
+                                                <p class="card-text" th:text="${request.getUserFrom().getAge()}+' years'"></p>
+                                            </div>
+                                        </div>
+                                        <div class="row ">
+                                            <div class="col text-end">
+                                                <form class="d-flex inline" method="post"
+                                                      th:action="@{'/family/request-answer/'+${request.getId()}}">
+                                                    <button class="btn btn-success w-50 mt-3 me-4" name="answer" value="accept"
+                                                            type="submit">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                             fill="currentColor" class="bi bi-check-lg"
+                                                             viewBox="0 0 16 16">
+                                                            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
+                                                        </svg>
+                                                    </button>
+                                                    <button class="btn btn-danger w-50 mt-3 ms-4" name="answer"  value="deny"
+                                                            type="submit">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                             fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${requests.size()==0}" class="text-center m-5">
+                        <label class="form-label fs-3 text-secondary">You dont have any requests</label>
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="shadow-border text-center">
+                    <label class=" form-label title fs-3">Request From you</label>
+                    <div class="border border-secondary"></div>
+                    <div th:if="${requestFromMe.size()!=0}" th:each="req : ${requestFromMe}">
+                        <div class="card m-3" style="max-width: 540px;">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <div th:switch="${FamilyController.getUserTo(req.getUserToId()).getImage()}">
+
+                                        <svg th:case="'Default'" style="width: 150px;height: 150px;margin:10px;"
+                                             xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                             class=" bi bi-person-bounding-box my-4" viewBox="0 0 16 16">
+                                            <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5z"/>
+                                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                                        </svg>
+
+                                        <image th:case="*"
+                                               style="text-align: center;width: 150px;height: 150px;border-radius: 10px;border-style: solid;border-color: var(--bs-gray);margin: 10px;box-shadow: 5px 5px 10px var(--bs-gray-700);"
+                                               th:src="*{'data:image/jpeg;base64,'+FamilyController.getUserTo(req.getUserToId()).getImage}"></image>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h5 class="card-title">Login: </h5>
+                                                <p class="card-text" th:text="${FamilyController.getUserTo(req.getUserToId()).getLogin()}"></p>
+                                            </div>
+                                            <div class="col">
+                                                <h5 class="card-title">Name: </h5>
+                                                <p class="card-text" th:text="${FamilyController.getUserTo(req.getUserToId()).getName()}"></p>
+                                            </div>
+                                            <div class="col"><h5 class="card-title">Surname: </h5>
+                                                <p class="card-text" th:text="${FamilyController.getUserTo(req.getUserToId()).getSurname()}"></p>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col">
+                                                <h5 class="card-title">Country: </h5>
+                                                <p class="card-text" th:text="${FamilyController.getUserTo(req.getUserToId()).getCountry()}"></p>
+                                            </div>
+                                            <div class="col">
+                                                <h5 class="card-title">Sex: </h5>
+                                                <p class="card-text" th:text="${FamilyController.getUserTo(req.getUserToId()).getSex()}"></p>
+                                            </div>
+                                            <div class="col">
+                                                <h5 class="card-title">Age: </h5>
+                                                <p class="card-text" th:text="${FamilyController.getUserTo(req.getUserToId()).getAge()}+' years'"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mt-3">
+                                            <div class="col">
+                                                <h5 class="card-title">Time: </h5>
+                                                <p class="card-text" th:text="${req.getTime().toLocalDate()}"></p>
+                                            </div>
+                                            <div class="col">
+                                                <h5 class="card-title">Status: </h5>
+                                                <p class="card-text text-warning" th:if="${req.getStatus()=='Waiting'}" th:text="${req.getStatus()}"></p>
+                                                <p class="card-text text-success" th:if="${req.getStatus()=='Accepted'}" th:text="${req.getStatus()}"></p>
+                                                <p class="card-text text-dander" th:if="${req.getStatus()=='Denied'}" th:text="${req.getStatus()}"></p>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${requestFromMe.size()==0}" class="text-center m-5">
+                        <label class="form-label fs-3 text-secondary">You never send requests</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="shadow-border">
+                    <div class="ms-5 mt-2 mb-2 d-flex inline text-center">
+                        <input type="text" class="form-control w-75 me-4" placeholder="Enter some data about user">
+                        <button class="btn btn-outline">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="border border-secondary"></div>
+                    <div style="overflow-y: scroll;height: 40rem;">
+                        <div th:each="userT : ${users}">
+                            <div class="card m-3" style="max-width: 540px;">
+                                <div class="row g-0">
+                                    <div class="col-md-4">
+                                        <div th:switch="${userT.getImage()}">
+
+                                            <svg th:case="'Default'" style="width: 150px;height: 150px;margin:10px;"
+                                                 xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                 class=" bi bi-person-bounding-box my-4" viewBox="0 0 16 16">
+                                                <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5z"/>
+                                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                                            </svg>
+
+                                            <image th:case="*"
+                                                   style="text-align: center;width: 150px;height: 150px;border-radius: 10px;border-style: solid;border-color: var(--bs-gray);margin: 10px;box-shadow: 5px 5px 10px var(--bs-gray-700);"
+                                                   th:src="*{'data:image/jpeg;base64,'+userT.getImage}"></image>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <h5 class="card-title">Login: </h5>
+                                                    <p class="card-text" th:text="${userT.getLogin()}"></p>
+                                                </div>
+                                                <div class="col">
+                                                    <h5 class="card-title">Name: </h5>
+                                                    <p class="card-text" th:text="${userT.getName()}"></p>
+                                                </div>
+                                                <div class="col"><h5 class="card-title">Surname: </h5>
+                                                    <p class="card-text" th:text="${userT.getSurname()}"></p>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col">
+                                                    <h5 class="card-title">Country: </h5>
+                                                    <p class="card-text" th:text="${userT.getCountry()}"></p>
+                                                </div>
+                                                <div class="col">
+                                                    <h5 class="card-title">Sex: </h5>
+                                                    <p class="card-text" th:text="${userT.getSex()}"></p>
+                                                </div>
+                                                <div class="col">
+                                                    <h5 class="card-title">Age: </h5>
+                                                    <p class="card-text" th:text="${userT.getAge()}+' years'"></p>
+                                                </div>
+                                            </div>
+                                            <div class="row ">
+                                                <div class="col text-end">
+                                                    <form method="post"
+                                                          th:action="@{'/family/send-request/'+${userT.getId()}}">
+                                                        <button th:if="${user.getFamilyId()==0}"
+                                                                class="btn btn-warning w-50 mt-3" type="submit"
+                                                                disabled>
+                                                            Send request
+                                                        </button>
+                                                        <button th:if="${user.getFamilyId()!=0}"
+                                                                class="btn btn-warning w-50 mt-3" type="submit">
+                                                            Send request
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+<footer th:insert="blocks/footer :: footer"></footer>
+
+
+<div th:insert="blocks/boostrapScripts.html :: scripts"></div>
+</body>
+</html>

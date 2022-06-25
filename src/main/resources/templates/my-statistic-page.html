@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <link rel="stylesheet" th:href="@{/css/myCSS.css}">
+    <title>My statistic</title>
+</head>
+<body>
+
+
+<header th:insert="blocks/nav-panel.html :: nav-panel"></header>
+
+
+<main>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="card shadow-border">
+                <div class="card-header text-center">
+                    <label class="tittle fs-4">Statistic of your family</label>
+                </div>
+                <div th:if="${user.getCurrentFamily()==null}" class="text-center m-3">
+                    <label class="title fs-2">You don`t have family! Let`s Create!</label><br>
+                    <a class="btn btn-success ms-3 mt-3" href="/family" style="width: 120px;">Create</a>
+                </div>
+                <div th:if="${user.getCurrentFamily()!=null}" class="text-center m-3">
+                    <div th:if="${user.getCurrentFamily().getMembers().size()==1}" class="text-center m-3">
+                        <label class="title fs-2">You don`t have members in you family!<br> Let`s invite
+                            them!</label><br>
+                        <a class="btn btn-success ms-3 mt-3" href="/family" style="width: 120px;">Invite</a>
+                    </div>
+                </div>
+                <div class="card-body d-flex flex-wrap">
+                    <div th:if="${user.getCurrentFamily()!=null and user.getCurrentFamily().getMembers().size()!=1}">
+                        <div th:each="member : ${user.getCurrentFamily().getMembers()}">
+                            <button th:if="${member!=user}" type="button" class="btn btn-outline-danger m-3"
+                                    data-bs-toggle="modal"
+                                    th:data-bs-target="'#'+${member.getLogin()}">
+
+
+                                <div th:switch="${member.getImage()}">
+                                    <svg th:case="'Default'"
+                                         style="width: 80px;height: 80px;margin:2px;"
+                                         xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                         class=" bi bi-person-bounding-box my-4"
+                                         viewBox="0 0 16 16">
+                                        <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5z"/>
+                                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                                    </svg>
+
+                                    <image th:case="*"
+                                           style="text-align: center;width: 100px;height: 100px;border-radius: 2px;border-style: solid;border-color: var(--bs-gray);margin: 10px;box-shadow: 5px 5px 10px var(--bs-gray-700);"
+                                           th:src="*{'data:image/jpeg;base64,'+member.getImage}"></image>
+                                </div>
+                                <label th:text="${member.getLogin()}"></label>
+                            </button>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+
+            <div class="card shadow-border">
+                <div class="card-header text-center">
+                    <label class="tittle fs-4">Your statistic</label>
+                </div>
+                <div class="card-body">
+                    <div class="card m-5">
+                        <div class="card-header text-center">
+                            <label class="title form-label  fs-3">Your expenses</label>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class=" border border-warning rounded-3 d-inline-flex p-2"><label class="title">For
+                                    this month you spent:</label></div>
+                                <div class=" border border-success rounded-3 d-inline-flex p-2"><label
+                                        class="form-label " th:text="${spentByMonth}+' uah'"></label></div>
+                                <div class=" border  border-success rounded-3 d-inline-flex p-2 ms-3 me-3">
+                                    <label class="form-label ">Your monthly plan: </label>
+                                    <form method="post" th:action="@{/my-statistic/change-plan}">
+                                        <input class="form-label ms-2 w-50" name="newPlan" th:value="${user.getPurse()}"
+                                               min="1" type="number">
+                                        <button class="btn btn-success ms-3">Save</button>
+                                    </form>
+
+                                </div>
+                                <div class=" border border-danger rounded-3 d-inline-flex p-2">
+                                    <label class="form-label title">Monthly plan completion rate:</label>
+                                    <div id="circle-container"></div>
+                                </div>
+
+                            </li>
+                            <li class="list-group-item" th:if="${mostSpentDirectionValue!=null}">
+                                <div class=" border border-warning rounded-3 d-inline-flex p-2">
+                                    <label class="title">For this month you most spent on: </label>
+                                </div>
+
+                                <div class=" border border-danger rounded-3 d-inline-flex p-2">
+                                    <label class="form-label ms-2" th:text="${mostSpentDirectionKey}"></label>
+                                </div>
+
+                                <div class=" border border-success rounded-3 d-inline-flex p-2">
+                                    <label class="form-label ms-2" th:text="${mostSpentDirectionValue}"></label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card m-5">
+                        <div class="card-header text-center">
+                            <label class="title form-label  fs-3">Expenses of your family</label>
+                        </div>
+                        <ul th:if="${user.getCurrentFamily()!=null}" class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class=" border border-warning rounded-3 d-inline-flex p-2"><label class="title">For
+                                    this month your family spent:</label></div>
+                                <div class=" border border-success   rounded-3 d-inline-flex p-2">
+                                    <label class="form-label ms-2" th:text="${spentByMonthByFamily}"></label></div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class=" border border-danger rounded-3 d-inline-flex p-2">
+                                    <label class="form-label title">Monthly plan of your family: </label>
+                                </div>
+                                <div th:if="${user.getCurrentFamily()!=null}"
+                                     class="border rounded-3 border-success d-inline-flex p-2 me-5">
+                                    <label class="title form-label" th:text="''+${planOfFamily}"></label>
+                                </div>
+                                <div class=" border border-danger rounded-3 d-inline-flex p-2">
+                                    <label class="form-label title">Monthly plan completion rate of your family:</label>
+                                    <div id="circle-container-family"></div>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <div th:if="${user.getCurrentFamily()==null}" class="text-center m-3">
+                            <label class="title fs-2">You don`t have family! Let`s Create!</label><br>
+                            <a class="btn btn-success ms-3 mt-3" href="/family" style="width: 120px;">Create</a>
+                        </div>
+                    </div>
+
+                    <div class="border rounded-3 p-2 text-center">
+                        <form id="formPeriod" method="post" th:action="@{/my-statistic/change-period}">
+                            <div class="d-flex ms-5 ">
+                                <label class="title fs-3 ms-5 mt-3 mb-3">Percentage by direction for </label>
+                                <select name="age" class="form-select w-25 ms-3 mt-3 mb-3" onchange="choosePeriod()">
+                                    <option th:if="${period==by}"
+                                            th:each="period : ${periods}"
+                                            th:value="${period}"
+                                            th:text="${period}" selected>
+                                    </option>
+                                    <option th:if="${period!=by}"
+                                            th:each="period : ${periods}"
+                                            th:value="${period}"
+                                            th:text="${period}">
+
+                                    </option>
+                                </select>
+                            </div>
+                        </form>
+                        <canvas id="directionPercentage"></canvas>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</main>
+
+<div th:if="${user.getCurrentFamily()!=null}">
+    <div th:each="member : ${user.getCurrentFamily().getMembers()}">
+        <!-- Modal -->
+        <div class="modal fade" th:id="${member.getLogin()}" tabindex="-1" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel" th:text="${member.getLogin()}"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div th:each="payment : ${member.getPayments('month')}">
+
+                            <div class="card my-2 mx-2">
+
+                                <div class="row">
+                                    <div class="col-6">
+                                        <img th:src="${payment.getImage()}"
+                                             class="card-img-top w-50 my-2 mx-2 text-center"
+                                             alt="some image">
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${payment.direction}"></h5>
+                                </div>
+
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item" th:text="'Sum: '+${payment.suma}+' uah'"></li>
+                                    <div class="mt-3 ms-3" th:if="${payment.getVoiceComment()!=null}">
+                                        <audio controls>
+                                            <source th:src="*{'data:audio/ogg;base64,'+payment.getVoiceComment()}">
+                                        </audio>
+                                    </div>
+                                    <li th:if="${payment.getVoiceComment()  ==null}" class="list-group-item"
+                                        th:text="'Comment: '+ ${payment.comment}">
+                                    </li>
+
+                                    <li class="list-group-item" th:text="'Type: '+${payment.type}"></li>
+                                    <li class="list-group-item"
+                                        th:text="${#temporals.format(payment.getTime(), 'dd-MM-yyyy HH:mm')}"></li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.0.1/progressbar.min.js"></script>
+
+<script th:inline="javascript">
+
+
+    /*<![CDATA[*/
+    var doPlaned = /*[[${doPlaned}]]*/ 'plan';
+    /*]]>*/
+
+    var circleBar = new ProgressBar.Circle("#circle-container", {
+        color: "white",
+        strokeWidth: 2,
+        trailWidth: 25,
+        trailColor: "#424141",
+        easing: "easeInOut",
+        from: {color: "#20a752", width: 10},
+        to: {color: "#e11b40", width: 25},
+        text: {
+            value: '0',
+            className: 'progress-text',
+            style: {
+                color: 'black',
+                position: 'absolute',
+                top: '45%',
+                left: '42%',
+                padding: 0,
+                margin: 0,
+                transform: null
+            }
+        },
+        step: (state, shape) => {
+            shape.path.setAttribute("stroke", state.color);
+            shape.path.setAttribute("stroke-width", state.width);
+            shape.setText(doPlaned * 100 + ' %');
+        }
+    });
+
+    circleBar.animate(doPlaned, {
+        duration: 1500
+    });
+
+</script>
+
+<script th:inline="javascript">
+
+
+    /*<![CDATA[*/
+    var doPlanedOfFamily = /*[[${doPlanedOfFamily}]]*/ 'plan';
+    /*]]>*/
+
+    var circleBar = new ProgressBar.Circle("#circle-container-family", {
+        color: "white",
+        strokeWidth: 2,
+        trailWidth: 25,
+        trailColor: "#424141",
+        easing: "easeInOut",
+        from: {color: "#20a752", width: 10},
+        to: {color: "#e11b40", width: 25},
+        text: {
+            value: '0',
+            className: 'progress-text',
+            style: {
+                color: 'black',
+                position: 'absolute',
+                top: '45%',
+                left: '42%',
+                padding: 0,
+                margin: 0,
+                transform: null
+            }
+        },
+        step: (state, shape) => {
+            shape.path.setAttribute("stroke", state.color);
+            shape.path.setAttribute("stroke-width", state.width);
+            shape.setText(Math.round(doPlanedOfFamily * 100) + ' %');
+        }
+    });
+
+    circleBar.animate(doPlanedOfFamily, {
+        duration: 1500
+    });
+
+</script>
+
+<script th:inline="javascript">
+
+    /*<![CDATA[*/
+    var valuesDirectionPercentage = /*[[${valuesDirectionPercentage}]]*/ 'All payments';
+    var keysDirectionPercentage = /*[[${keysDirectionPercentage}]]*/'Values payments grouped by direction ';
+    /*]]>*/
+
+    var ctx = document.getElementById('directionPercentage').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: keysDirectionPercentage,
+            datasets: [{
+                label: " ",
+                backgroundColor: ['#0d3c6d', '#0a519d', '#6a65d0', '#e87ffc', "#ffa6f4", "#edce55", "#9bebb5", "#ff557a"],
+                data: valuesDirectionPercentage,
+            }]
+        },
+        options: {}
+    })
+</script>
+
+
+<script>
+    function choosePeriod() {
+        document.getElementById('formPeriod').submit();
+    }
+
+</script>
+
+<script>
+    function chooseDirection() {
+        document.getElementById('formDirection').submit();
+    }
+</script>
+
+
+<footer th:insert="blocks/footer :: footer"></footer>
+<div th:insert="blocks/boostrapScripts.html :: scripts"></div>
+
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="eng" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>profile</title>
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/Navigation-with-Button.css">
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/myCSS.css}">
+    <title>Edit</title>
+</head>
+
+<body>
+<header th:insert="blocks/nav-panel.html :: nav-panel"></header>
+<main>
+    <div class="container">
+        <div class="row" style="margin-top: 35px;">
+            <div class="col" style="border-style: none;">
+                <div class="card" style="border-style: none;">
+                    <div class="card-header"
+                         style="text-align: center;color: var(--bs-gray-900);border-radius: 20px;border: 3px solid var(--bs-gray);box-shadow: 5px 5px 5px var(--bs-gray);margin-top: 30px;">
+                        <label class="form-label"
+                               style="margin-top:10px;font-size: 42px;text-align: center;">Profile</label>
+                    </div>
+                    <form method="post" th:action="@{/profile/edit}" enctype="multipart/form-data">
+                        <div class="card-body"
+                             style="border: 3px solid var(--bs-gray);border-bottom-left-radius: 20px;border-bottom-right-radius: 20px;box-shadow: 5px 5px 10px var(--bs-gray);margin-right: 25px;margin-left: 25px;">
+                            <div class="row">
+                                <div class="col" style="text-align: center;">
+                                    <div th:switch="${user.getImage()}">
+
+                                        <svg th:case="'Default'" style="width: 150px;height: 150px;"
+                                             xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                             class=" bi bi-person-bounding-box my-4" viewBox="0 0 16 16">
+                                            <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5z"/>
+                                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                                        </svg>
+                                        <div id="divImage">
+                                            <img id="profile-img" th:case="*"
+                                                 class="ava"
+                                                 th:src="*{'data:image/jpeg;base64,'+user.getImage()}">
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <input type="file" class="form-control " name="newImage"
+                                               id="inputGroupFile04"
+                                               aria-describedby="inputGroupFileAddon04" aria-label="Upload"
+                                               onchange="editImage(this)">
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="row" style="padding: 10px;">
+                                <div class="col"
+                                     style="border-radius: 10px;margin: 5px;filter: blur(0px);box-shadow: 8px 8px 10px var(--bs-gray-600);border: 3px solid var(--bs-gray) ;">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            <label class="form-label">Login:&nbsp;</label><br>
+                                            <input type="text" class="form-control" th:name="newLogin"
+                                                   th:value="${user.getUsername()}">
+                                        </li>
+                                        <li class="list-group-item">
+                                            <label class="form-label">Password:&nbsp;</label><br>
+                                            <input type="text" class="form-control" name="newPassword1"
+                                                   th:value="${user.getPassword()}"><br>
+                                            <input type="text" class="form-control" name="newPassword2"
+                                                   th:value="${user.getPassword()}">
+                                        </li>
+                                        <li class="list-group-item">
+                                            <label class="form-label">Email:&nbsp;</label><br>
+                                            <input type="email" class="form-control" name="newEmail"
+                                                   th:value="${user.getEmail()}">
+                                        </li>
+                                        <li class="list-group-item">
+                                            <label class="form-label">Name:&nbsp;</label><br>
+                                            <input type="text" class="form-control" name="newName"
+                                                   th:value="${user.getName()}">
+                                        </li>
+                                        <li class="list-group-item">
+                                            <label class="form-label">Surname:&nbsp;</label><br>
+                                            <input type="text" class="form-control" name="newSurname"
+                                                   th:value="${user.getSurname()}">
+                                        </li>
+                                        <li class="list-group-item">
+                                            <label class="form-label">Country:&nbsp;</label><br>
+                                            <select class="form-select" name="newCountry">
+                                                <option th:value="${user.getCountry()}"
+                                                        th:text="${user.getCountry()}" selected>
+                                                </option>
+                                                <option th:each="country : ${countries}" th:value="${country}"
+                                                        th:text="${country}">
+                                                </option>
+                                            </select>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <label class="form-label">Number:&nbsp;</label><br>
+                                            <input type="text" class="form-control" name="newNumber"
+                                                   th:value="${user.getNumber()}">
+                                        </li>
+                                        <li class="list-group-item">
+                                            <label class="form-label">Sex:&nbsp;</label><br>
+                                            <div class="text-center " style="display:flex; margin-bottom: 10px;">
+
+
+                                                <div class="form-check  ">
+                                                    <input class="form-check-input" value="0" type="radio"
+                                                           name="newSex"
+                                                           id="radioSex1"
+
+                                                           th:if="${user.getSex()=='Male'}" checked>
+                                                    <input class="form-check-input" value="0" type="radio"
+                                                           name="newSex"
+                                                           id="radioSex2"
+
+                                                           th:if="${user.getSex()!='Male'}">
+                                                    <label class="form-check-label" for="radioSex2">
+                                                        Male
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25"
+                                                             fill="currentColor"
+                                                             class="bi bi-gender-male" viewBox="0 0 16 16">
+                                                            <path fill-rule="evenodd"
+                                                                  d="M9.5 2a.5.5 0 0 1 0-1h5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V2.707L9.871 6.836a5 5 0 1 1-.707-.707L13.293 2H9.5zM6 6a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/>
+                                                        </svg>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check mx-5">
+                                                    <input class="form-check-input" value="1" type="radio"
+                                                           name="newSex"
+                                                           id="radioSex3" th:if="${user.getSex()=='Female'}" checked>
+                                                    <input class="form-check-input" value="1" type="radio"
+                                                           name="newSex"
+                                                           id="radioSex4" th:if="${user.getSex()}!='Female' ">
+                                                    <label class="form-check-label" for="radioSex3">
+                                                        Female
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25"
+                                                             fill="currentColor"
+                                                             class="bi bi-gender-female" viewBox="0 0 16 16">
+                                                            <path fill-rule="evenodd"
+                                                                  d="M8 1a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM3 5a5 5 0 1 1 5.5 4.975V12h2a.5.5 0 0 1 0 1h-2v2.5a.5.5 0 0 1-1 0V13h-2a.5.5 0 0 1 0-1h2V9.975A5 5 0 0 1 3 5z"/>
+                                                        </svg>
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                        </li>
+                                        <li class="list-group-item">
+                                            <label class="form-label">Birthday:&nbsp;</label><br>
+                                            <input type="date" name="newBirthday" th:value="${user.getBirthday()}"
+                                                   class="form-control mb-3">
+                                        </li>
+                                    </ul>
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-md-10">
+                                                <pre th:if="${errors!=''}"
+                                                     class="form-label text-danger fs-6 border rounded p-3 border-danger "
+                                                     th:text="${errors}"></pre>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="text-end my-3 mx-3">
+                                                    <button type="submit" class="btn btn-success">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                                             fill="currentColor"
+                                                             class="bi bi-box-arrow-down" viewBox="0 0 16 16">
+                                                            <path fill-rule="evenodd"
+                                                                  d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z"/>
+                                                            <path fill-rule="evenodd"
+                                                                  d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z"/>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col">
+                <!--            <div class="col" style="border-color: var(&#45;&#45;bs-yellow);">-->
+                <!--                <div class="card" style="border-style: none;">-->
+                <!--                    <div class="card-header"-->
+                <!--                         style="text-align: center;border: 3px solid var(&#45;&#45;bs-gray);border-radius: 20px;margin-top: 30px;box-shadow: 5px 5px 10px var(&#45;&#45;bs-gray);">-->
+                <!--                        <label class="form-label" style="font-size: 42px;">Family</label>-->
+                <!--                    </div>-->
+                <!--                    <div th:if="${user.getFamilyId()!=0}" class="card-body" style="border-style: solid;border-color: var(&#45;&#45;bs-gray);border-bottom-right-radius: 20px;border-bottom-left-radius:20px;margin-left:25px;margin-right:25px;box-shadow: 5px 5px 10px rgb(244,225,170);">-->
+                <!--                        <div class="row">-->
+                <!--                            <div class="col" style="text-align: center;">-->
+                <!--                                <div class="card" style="border-style:none; width: 200px;text-align: center;">-->
+                <!--                                    <div class="card-body"-->
+                <!--                                         style="border-style: solid;border-color: var(&#45;&#45;bs-gray);border-radius: 15px;box-shadow: 5px 5px 10px var(&#45;&#45;bs-gray-700);">-->
+                <!--                                        <div class="row">-->
+                <!--                                            <div class="col"><img-->
+                <!--                                                    style="width: 50px;height: 50px;margin: 5px;border-style: solid;border-color: var(&#45;&#45;bs-gray-700);border-radius: 5px;">-->
+                <!--                                            </div>-->
+                <!--                                            <div class="col" style="text-align: center;"><label class="col-form-label"-->
+                <!--                                                                                                style="text-align: center;margin-top: 5px;">UserLogin</label>-->
+                <!--                                            </div>-->
+                <!--                                            <div class="col" style="text-align: center;">-->
+                <!--                                                <button class="btn btn-primary" type="button"-->
+                <!--                                                        style="background: var(&#45;&#45;bs-red);width: 120px;height: 35px;margin: 10px;color: var(&#45;&#45;bs-gray-700);border-style: solid;border-color: var(&#45;&#45;bs-red);"></button>-->
+                <!--                                            </div>-->
+                <!--                                        </div>-->
+                <!--                                    </div>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                    <div th:if="${user.getFamilyId()==0}" class="card-body text-center fs-1 text-muted"-->
+                <!--                         style="border-bottom-right-radius: 20px;border-bottom-left-radius:20px;margin-left:25px;margin-right:25px;box-shadow: 5px 5px 10px var(&#45;&#45;bs-gray);border: 3px solid var(&#45;&#45;bs-gray) ">-->
+                <!--                        <label class="form-label ">You don`t have family!</label><br>-->
+                <!--                        <button class="btn btn-success">Let`s Create!</button>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <!--            </div>-->
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col"></div>
+    </div>
+    <div class="row">
+        <div class="col"></div>
+    </div>
+
+</main>
+<footer th:insert="blocks/footer :: footer"></footer>
+<script th:src="@{/js/image-view.js}"></script>
+<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

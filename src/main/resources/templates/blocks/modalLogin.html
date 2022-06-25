@@ -1,0 +1,33 @@
+<div th:fragment="modalLogin">
+    <div class="modal fade" id="exampleModal" tab-index="-1" aria-bs-labelby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Login</h5>
+                    <button class="btn-close" data-bs-dismiss="modal" aria-bs-label="close"></button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/login}" th:method="post">
+                        <div class="rov mb-3 d-flex">
+                            <label for="inputUsername" class="col-sm-2 col-form-label">Username</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="username" class="form-control" id="inputUsername">
+                            </div>
+                        </div>
+                        <div class="rov mb-3 d-flex">
+                            <label for="inputPass" class="col-sm-2 col-form-label">Password</label>
+                            <div class="col-sm-10">
+                                <input type="password" name="password" class="form-control" id="inputPass">
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
+                        <button  type="submit" class="btn btn-secondary">Sign in</button>
+                    </form>
+                </div>
+
+                <a class="nav-link" href="/registration">Don`t have account?Register!</a>
+            </div>
+        </div>
+    </div>
+</div>

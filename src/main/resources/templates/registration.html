@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <title>Registration</title>
+</head>
+
+<body style="transform: perspective(0px);text-align: left;">
+<div class="container" style="width: 25rem;margin-top: 10rem;">
+    <section class="register-photo " style="width: 350px;border-radius: 30px;background: white;padding: 25px;">
+        <div class="form-container background-secondary">
+            <form method="post">
+                <h2 class="text-center"><strong>Create</strong> an account.</h2>
+                <div style="margin-bottom: 15px;"><input class="form-control" name="login" type="text" placeholder="Login"/></div>
+                <div class="mb-3"><input class="form-control" type="password" name="password1" placeholder="Password"/></div>
+                <div class="mb-3"><input class="form-control" type="password" name="password2" placeholder="Password (repeat)"/></div>
+                <div class="mb-3"><input class="form-control" type="email" name="email" placeholder="Email"/></div>
+                <div class="mb-3"><input class="form-control" type="date" name="birthday" /></div>
+                <div class="mb-3">
+                    <select class="form-select" name="country">
+                        <option th:each="country : ${countries}"
+                                th:value="${country}"
+                                th:text="${country}"></option>
+                    </select></div>
+                <div class="text-center " style="display:flex; margin-bottom: 20px;">
+                    <div class="form-check  ">
+                        <input class="form-check-input" value="0" type="radio"
+                               name="sex"
+                               id="flexRadioNal"
+                               checked>
+                        <label class="form-check-label" for="flexRadioNal">
+                            Male
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                                 class="bi bi-gender-male" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                      d="M9.5 2a.5.5 0 0 1 0-1h5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V2.707L9.871 6.836a5 5 0 1 1-.707-.707L13.293 2H9.5zM6 6a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/>
+                            </svg>
+                        </label>
+                    </div>
+                    <div class="form-check mx-5">
+                        <input class="form-check-input" value="1" type="radio"
+                               name="sex"
+                               id="flexRadioTerminal">
+                        <label class="form-check-label" for="flexRadioTerminal">
+                            Female
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                                 class="bi bi-gender-female" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                      d="M8 1a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM3 5a5 5 0 1 1 5.5 4.975V12h2a.5.5 0 0 1 0 1h-2v2.5a.5.5 0 0 1-1 0V13h-2a.5.5 0 0 1 0-1h2V9.975A5 5 0 0 1 3 5z"/>
+                            </svg>
+                        </label>
+                    </div>
+                </div>
+
+                <div th:if="${error!=''}" class="form-check border border-danger rounded-3 mb-3 text-center"><label class="form-check-label fs-6 text-danger" th:text="${error}"></label>
+                </div>
+                <form method="post" th:action="@{/registration}">
+                    <button class="btn btn-primary d-block w-100" type="submit"
+                            style="border-color: var(--bs-warning);background: var(--bs-yellow);">Sign Up
+                    </button>
+                </form>
+                <a class="already link-secondary" href="/login">You already have an account? Login here.</a>
+            </form>
+        </div>
+    </section>
+</div>
+</body>
+</html>
